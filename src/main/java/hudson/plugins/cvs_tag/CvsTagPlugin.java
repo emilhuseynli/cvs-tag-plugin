@@ -86,7 +86,7 @@ public class CvsTagPlugin {
         String date = df.format( rootBuild.getTimestamp().getTime());
 
         ArgumentListBuilder cmd = new ArgumentListBuilder();
-        cmd.add(scm.getDescriptor().getCvsExeOrDefault(), "-d", scm.getCvsRoot());
+        cmd.add("cvs.exe", "-d", scm.getCvsRoot());
 
         String branch = scm.getBranch();
         if ( branch != null)
