@@ -79,7 +79,7 @@ public class CvsTagPlugin {
 		final String tag = tokens[0];
 		final String cvsExe = tokens[1];
 		final String cvsRoot = tokens[2];
-		final String branch = tokens[3];
+		final String branch = tokens.length > 3 ? tokens[3] : null;
 
         // Evaluate the groovy tag name
         Map<String, String> env = build.getEnvironment(listener);
