@@ -73,11 +73,17 @@ public class CvsTagPlugin {
             return true;
         }
 
-        CVSSCM scm = CVSSCM.class.cast(rootProject.getScm());
+//        CVSSCM scm = CVSSCM.class.cast(rootProject.getScm());
+        
+		final String[] tokens = tagName.split("\\|");
+		final String tag = tokens[0];
+		final String cvsExe = tokens[1];
+		final String cvsRoot = tokens[2];
+		final String branch = tokens[3];
 
         // Evaluate the groovy tag name
         Map<String, String> env = build.getEnvironment(listener);
-        tagName = evalGroovyExpression(env, tagName);
+        tagName = evalGroovyExpression(env, tag);
 
         // -D option for rtag command.
         // Tag the most recent revision no later than <date> ...
@@ -86,9 +92,8 @@ public class CvsTagPlugin {
         String date = df.format( rootBuild.getTimestamp().getTime());
 
         ArgumentListBuilder cmd = new ArgumentListBuilder();
-        cmd.add(scm.getDescriptor().getCvsExeOrDefault(), "-d", scm.getCvsRoot());
+        cmd.add(cvsExe, "-d", cvsRoot);
 
-        String branch = scm.getBranch();
         if ( branch != null)
         {
             // cvs -d cvsRoot tag -r branch tagName modules
@@ -97,7 +102,7 @@ public class CvsTagPlugin {
             {
                 cmd.add("-F");
             }
-            cmd.add("-r",scm.getBranch(), tagName);
+            cmd.add("-r", branch, tagName);
         }
         else
         {
@@ -111,11 +116,11 @@ public class CvsTagPlugin {
         }
 
 
-        String[] modulesNormalized = scm.getAllModulesNormalized();
-        if( branch == null || scm.isLegacy() || modulesNormalized.length > 1 )
-        {
-            cmd.add(scm.getAllModulesNormalized());
-        }
+//        String[] modulesNormalized = scm.getAllModulesNormalized();
+//        if( branch == null || scm.isLegacy() || modulesNormalized.length > 1 )
+//        {
+//            cmd.add(scm.getAllModulesNormalized());
+//        }
 
         logger.println("Executing tag command: " + cmd.toStringWithQuote());
         FilePath workingDir = rootBuild.getWorkspace();
